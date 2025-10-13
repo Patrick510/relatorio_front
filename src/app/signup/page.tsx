@@ -1,16 +1,18 @@
 "use client";
-import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
-import Link from "next/link";
 
-export default function LoginPage() {
-  const { login, loading, error } = useAuth();
+import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+
+export default function SignInPage() {
+  const { register, loading, error } = useAuth();
+  const [nome, setNome] = useState("");
+  const [cargo, setCargo] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email, senha);
+    register(nome, cargo, email, senha);
   };
 
   return (
@@ -19,7 +21,21 @@ export default function LoginPage() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-3 p-4 border rounded-lg"
       >
-        <h1 className="text-xl font-bold text-center">Login</h1>
+        <h1 className="text-xl font-bold text-center">Cadastro</h1>
+        <input
+          className="border p-2 rounded"
+          placeholder="Nome"
+          type="text"
+          value={nome}
+          onChange={(e) => setNome(e.target.value)}
+        />
+        <input
+          className="border p-2 rounded"
+          placeholder="Cargo"
+          type="text"
+          value={cargo}
+          onChange={(e) => setCargo(e.target.value)}
+        />
         <input
           className="border p-2 rounded"
           placeholder="Email"
@@ -38,14 +54,8 @@ export default function LoginPage() {
           disabled={loading}
           className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:opacity-50"
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
-        <Link
-          href="/signup"
-          className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:opacity-50"
-        >
-          Cadastrar
-        </Link>
         {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       </form>
     </div>

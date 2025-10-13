@@ -36,6 +36,34 @@ export function useAuth() {
     }
   }
 
+  async function register(
+    nome: string,
+    cargo: string,
+    email: string,
+    senha: string
+  ) {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("http://localhost:8080/praxis/usuarios", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ nome, cargo, email, senha }),
+      });
+      if (!res.ok) {
+        setError("Erro ao cadastrar");
+        return false;
+      }
+      router.push("/login");
+      return true;
+    } catch {
+      setError("Erro de conexão com o servidor");
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
@@ -62,5 +90,6 @@ export function useAuth() {
     isAuthenticated,
     loading,
     error,
+    register,
   };
 }
