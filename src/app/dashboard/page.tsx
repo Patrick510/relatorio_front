@@ -1,24 +1,18 @@
 "use client";
-import { useSession, signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useProtectedRoute } from "@/hooks/useProtectedRoute";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function DashboardPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  if (status === "loading") return <p>Carregando...</p>;
-  if (!session) {
-    router.push("/login");
-    return null;
-  }
+  useProtectedRoute(); // qualquer usuário logado
+  const { logout, getRole } = useAuth();
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-4">
-      <h1 className="text-2xl font-bold">Bem-vindo, {session.user?.name}</h1>
-      <p>Seu email: {session.user?.email}</p>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <p>Role do usuário: {getRole()}</p>
       <button
-        onClick={() => signOut()}
-        className="bg-red-600 text-white rounded p-2 hover:bg-red-700 transition"
+        onClick={logout}
+        className="bg-red-600 text-white rounded p-2 mt-4 hover:bg-red-700"
       >
         Sair
       </button>

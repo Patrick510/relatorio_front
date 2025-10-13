@@ -1,34 +1,24 @@
 "use client";
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
+  const { login, loading, error } = useAuth();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const router = useRouter();
+  const [senha, setSenha] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
-    if (!res?.error) {
-      router.push("/dashboard");
-    } else {
-      alert("Credenciais inválidas");
-    }
+    login(email, senha);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex items-center justify-center h-screen">
       <form
         onSubmit={handleSubmit}
-        className="p-6 border rounded-xl shadow w-80 flex flex-col gap-3"
+        className="flex flex-col gap-3 p-4 border rounded-lg"
       >
-        <h1 className="text-xl font-semibold mb-2 text-center">Login</h1>
+        <h1 className="text-xl font-bold text-center">Login</h1>
         <input
           className="border p-2 rounded"
           placeholder="Email"
@@ -40,15 +30,16 @@ export default function LoginPage() {
           className="border p-2 rounded"
           placeholder="Senha"
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
         />
         <button
-          type="submit"
-          className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 transition"
+          disabled={loading}
+          className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 disabled:opacity-50"
         >
-          Entrar
+          {loading ? "Entrando..." : "Entrar"}
         </button>
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
       </form>
     </div>
   );
