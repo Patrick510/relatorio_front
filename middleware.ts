@@ -1,0 +1,11 @@
+import { withAuth } from "next-auth/middleware";
+
+export default withAuth({
+  pages: {
+    signIn: "/login", // rota de login
+  },
+});
+
+export const config = {
+  matcher: ["/dashboard/:path*"], // quais rotas vão exigir autenticação
+};
