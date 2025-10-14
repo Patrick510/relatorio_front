@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { Role } from "@/types";
 
 export function useUsuario() {
   const [loading, setLoading] = useState(false);
@@ -38,5 +39,6 @@ export function useUsuario() {
       setLoading(false);
     }
   }
+
   return { register, loading, error };
 }

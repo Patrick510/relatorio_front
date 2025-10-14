@@ -10,3 +10,9 @@ export type Usuario = {
   cargoId: number;
   role: string;
 };
+
+export enum Role {
+  ADMIN = 0,
+  USER = 1,
+  TECH_INNOVATOR = 2,
+}

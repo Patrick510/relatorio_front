@@ -8,7 +8,7 @@ import { UserPlus } from "lucide-react";
 import { useUsuario } from "@/hooks/useUsuario";
 import { useCargo } from "@/hooks/useCargo";
 import CardForm from "@/components/cardForm";
-import { Cargo } from "@/types";
+import { Cargo, Role } from "@/types";
 import { signupSchema } from "@/types/signup";
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -41,6 +41,7 @@ export default function SignupPage() {
 
   const onSubmit = async (data: SignupFormValues) => {
     try {
+      // 👇 converte role para número
       register(data.nome, parseInt(data.cargoId), data.email, data.senha);
     } catch (err) {
       if (err instanceof Error) {
