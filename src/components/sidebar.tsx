@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const menuItems = [
   { icon: Home, label: "Início", href: "/dashboard" },
@@ -15,6 +16,7 @@ const menuItems = [
 ];
 
 export function Sidebar() {
+  const { logout } = useAuth();
   const pathname = usePathname();
 
   return (
@@ -67,8 +69,7 @@ export function Sidebar() {
           variant="ghost"
           className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
           onClick={() => {
-            // Adicione sua lógica de logout aqui
-            console.log("Logout");
+            logout();
           }}
         >
           <LogOut className="h-5 w-5" />

@@ -10,7 +10,7 @@ export function useAuth() {
 
   // Cria uma instância do Axios com baseURL padrão
   const api = axios.create({
-    baseURL: "http://localhost:8080/praxis",
+    baseURL: "http://localhost:8080/praxis/auth",
     headers: { "Content-Type": "application/json" },
   });
 
@@ -19,7 +19,7 @@ export function useAuth() {
     setLoading(true);
     setError("");
     try {
-      const res = await api.post("/auth", { email, senha });
+      const res = await api.post("/login", { email, senha });
       const data = res.data;
 
       localStorage.setItem("token", data.token);

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -25,6 +24,8 @@ import {
 } from "@/components/ui/form";
 import { useAuth } from "@/hooks/useAuth";
 
+const DEV_MODE = true;
+
 const loginSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
   senha: z
@@ -36,38 +37,26 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { login, loading, error } = useAuth();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
 
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: DEV_MODE ? undefined : zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      senha: "",
+      email: "admin@teste.com",
+      senha: "123456",
     },
   });
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      // Simula uma chamada de API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Aqui você adicionaria a lógica real de autenticação
-      console.log("Login:", data);
-      login(email, senha);
+      console.log("Tentando login com:", data);
+      await login(data.email, data.senha);
     } catch (err) {
-      // Log the error for debugging
-      if (err instanceof Error) {
-        console.error("Login error:", err.message);
-      } else {
-        console.error("Login error:", err);
-      }
+      console.error("Erro no login:", err);
     }
   };
 
   return (
     <div className="flex min-h-screen">
-      {/* Lado esquerdo - Formulário */}
       <div className="flex flex-1 items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
@@ -85,9 +74,7 @@ export default function LoginPage() {
           <Card>
             <CardHeader>
               <CardTitle>Login</CardTitle>
-              <CardDescription>
-                Digite suas credenciais para acessar sua conta
-              </CardDescription>
+              <CardDescription>Digite suas credenciais</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
@@ -108,8 +95,6 @@ export default function LoginPage() {
                               placeholder="seu@email.com"
                               className="pl-10"
                               {...field}
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
                             />
                           </div>
                         </FormControl>
@@ -132,8 +117,6 @@ export default function LoginPage() {
                               placeholder="••••••••"
                               className="pl-10"
                               {...field}
-                              value={senha}
-                              onChange={(e) => setSenha(e.target.value)}
                             />
                           </div>
                         </FormControl>
@@ -174,23 +157,6 @@ export default function LoginPage() {
               </div>
             </CardContent>
           </Card>
-        </div>
-      </div>
-
-      {/* Lado direito - Imagem/Ilustração */}
-      <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center lg:bg-gradient-to-br lg:from-primary/10 lg:via-primary/5 lg:to-background">
-        <div className="max-w-md space-y-6 p-8 text-center">
-          <div className="mx-auto h-64 w-64 rounded-full bg-primary/20 flex items-center justify-center">
-            <LogIn className="h-32 w-32 text-primary" />
-          </div>
-          <h2 className="text-2xl font-bold text-foreground">
-            Gerencie seu negócio com eficiência
-          </h2>
-          <p className="text-muted-foreground">
-            Acesse seu painel de controle e tenha todas as ferramentas
-            necessárias para gerenciar seus usuários, documentos e configurações
-            em um só lugar.
-          </p>
         </div>
       </div>
     </div>

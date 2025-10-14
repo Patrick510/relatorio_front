@@ -32,7 +32,7 @@ export default function SignupPage() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       nome: "",
-      cargoId: cargos.length > 0 ? cargos[0].id.toString() : "",
+      cargoId: "",
       email: "",
       senha: "",
       confirmarSenha: "",
