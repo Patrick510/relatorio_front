@@ -1,75 +1,52 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export function useAuth() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
+  // Cria uma instância do Axios com baseURL padrão
+  const api = axios.create({
+    baseURL: "http://localhost:8080/praxis",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  // Login
   async function login(email: string, senha: string) {
     setLoading(true);
     setError("");
-
     try {
-      const res = await fetch("http://localhost:8080/praxis/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ email, senha }),
-      });
+      const res = await api.post("/auth", { email, senha });
+      const data = res.data;
 
-      if (!res.ok) {
-        setError("Credenciais inválidas");
-        return false;
-      }
-
-      const data = await res.json();
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
+
       router.push("/dashboard");
       return true;
-    } catch {
-      setError("Erro de conexão com o servidor");
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function register(
-    nome: string,
-    cargo: string,
-    email: string,
-    senha: string
-  ) {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch("http://localhost:8080/praxis/usuarios", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ nome, cargo, email, senha }),
-      });
-      if (!res.ok) {
-        setError("Erro ao cadastrar");
-        return false;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        setError("Credenciais inválidas");
+      } else {
+        setError("Erro de conexão com o servidor");
       }
-      router.push("/login");
-      return true;
-    } catch {
-      setError("Erro de conexão com o servidor");
       return false;
     } finally {
       setLoading(false);
     }
   }
 
+  // Logout
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     router.push("/login");
   }
 
+  // Funções de autenticação
   function getToken() {
     return localStorage.getItem("token");
   }
@@ -90,6 +67,5 @@ export function useAuth() {
     isAuthenticated,
     loading,
     error,
-    register,
   };
 }
