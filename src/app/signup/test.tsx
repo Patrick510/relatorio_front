@@ -5,7 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import Link from "next/link";
-import { LogIn, Mail, Lock, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { UserPlus, Mail, Lock, User, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,45 +24,57 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/hooks/useAuth";
 
-const loginSchema = z.object({
-  email: z.string().email({ message: "Email inválido" }),
-  senha: z
-    .string()
-    .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
-});
+const signupSchema = z
+  .object({
+    nome: z
+      .string()
+      .min(2, { message: "O nome deve ter no mínimo 2 caracteres" }),
+    email: z.string().email({ message: "Email inválido" }),
+    senha: z
+      .string()
+      .min(6, { message: "A senha deve ter no mínimo 6 caracteres" }),
+    confirmarSenha: z.string(),
+  })
+  .refine((data) => data.senha === data.confirmarSenha, {
+    message: "As senhas não coincidem",
+    path: ["confirmarSenha"],
+  });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type SignupFormValues = z.infer<typeof signupSchema>;
 
-export default function LoginPage() {
-  const { login, loading, error } = useAuth();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+export default function SignupPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
+      nome: "",
       email: "",
       senha: "",
+      confirmarSenha: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: SignupFormValues) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
       // Simula uma chamada de API
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Aqui você adicionaria a lógica real de autenticação
-      console.log("Login:", data);
-      login(email, senha);
+      // Aqui você adicionaria a lógica real de cadastro
+      console.log("Cadastro:", data);
+
+      // Redireciona para o dashboard após cadastro bem-sucedido
+      router.push("/dashboard");
     } catch (err) {
-      // Log the error for debugging
-      if (err instanceof Error) {
-        console.error("Login error:", err.message);
-      } else {
-        console.error("Login error:", err);
-      }
+      setError("Erro ao criar conta. Tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,21 +85,21 @@ export default function LoginPage() {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-              <LogIn className="h-6 w-6 text-primary" />
+              <UserPlus className="h-6 w-6 text-primary" />
             </div>
             <h1 className="mt-6 text-3xl font-bold tracking-tight text-foreground">
-              Bem-vindo de volta
+              Criar conta
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Entre com sua conta para continuar
+              Preencha os dados para começar
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Login</CardTitle>
+              <CardTitle>Cadastro</CardTitle>
               <CardDescription>
-                Digite suas credenciais para acessar sua conta
+                Crie sua conta para acessar o sistema
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -95,6 +108,27 @@ export default function LoginPage() {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-4"
                 >
+                  <FormField
+                    control={form.control}
+                    name="nome"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome completo</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                              placeholder="João Silva"
+                              className="pl-10"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="email"
@@ -108,8 +142,6 @@ export default function LoginPage() {
                               placeholder="seu@email.com"
                               className="pl-10"
                               {...field}
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
                             />
                           </div>
                         </FormControl>
@@ -132,8 +164,28 @@ export default function LoginPage() {
                               placeholder="••••••••"
                               className="pl-10"
                               {...field}
-                              value={senha}
-                              onChange={(e) => setSenha(e.target.value)}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="confirmarSenha"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Confirmar senha</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                              type="password"
+                              placeholder="••••••••"
+                              className="pl-10"
+                              {...field}
                             />
                           </div>
                         </FormControl>
@@ -148,14 +200,14 @@ export default function LoginPage() {
                     </div>
                   )}
 
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? (
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        Entrando...
+                        Criando conta...
                       </>
                     ) : (
-                      "Entrar"
+                      "Criar conta"
                     )}
                   </Button>
                 </form>
@@ -163,13 +215,13 @@ export default function LoginPage() {
 
               <div className="mt-6 text-center text-sm">
                 <span className="text-muted-foreground">
-                  Não tem uma conta?{" "}
+                  Já tem uma conta?{" "}
                 </span>
                 <Link
-                  href="/signup"
+                  href="/login"
                   className="font-medium text-primary hover:underline"
                 >
-                  Cadastre-se
+                  Faça login
                 </Link>
               </div>
             </CardContent>
@@ -181,15 +233,13 @@ export default function LoginPage() {
       <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center lg:bg-gradient-to-br lg:from-primary/10 lg:via-primary/5 lg:to-background">
         <div className="max-w-md space-y-6 p-8 text-center">
           <div className="mx-auto h-64 w-64 rounded-full bg-primary/20 flex items-center justify-center">
-            <LogIn className="h-32 w-32 text-primary" />
+            <UserPlus className="h-32 w-32 text-primary" />
           </div>
-          <h2 className="text-2xl font-bold text-foreground">
-            Gerencie seu negócio com eficiência
-          </h2>
+          <h2 className="text-2xl font-bold text-foreground">Junte-se a nós</h2>
           <p className="text-muted-foreground">
-            Acesse seu painel de controle e tenha todas as ferramentas
-            necessárias para gerenciar seus usuários, documentos e configurações
-            em um só lugar.
+            Crie sua conta e tenha acesso a todas as funcionalidades do sistema.
+            Gerencie usuários, documentos e muito mais em uma plataforma
+            completa.
           </p>
         </div>
       </div>
