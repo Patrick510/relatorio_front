@@ -16,6 +16,15 @@ const menuItems = [
   { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
 ];
 
+// const menuItems = [
+//   { icon: Home, label: "Início", href: "/dashboard" },
+//   { icon: Users, label: "Usuários", href: "/dashboard/users" },
+//   { icon: Briefcase, label: "Cargos", href: "/dashboard/cargos" },
+//   { icon: ClipboardList, label: "Relatório", href: "/dashboard/relatorio" },
+//   { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
+//   { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
+// ]
+
 export function Sidebar() {
   const { logout } = useAuth();
   const pathname = usePathname();
