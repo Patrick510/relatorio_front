@@ -1,6 +1,15 @@
 "use client";
 
-import { Home, Settings, Users, FileText, LogOut, Cloud } from "lucide-react";
+import {
+  Home,
+  Settings,
+  Users,
+  FileText,
+  LogOut,
+  Cloud,
+  Briefcase,
+  ClipboardList,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,19 +20,12 @@ import { useAuth } from "@/hooks/useAuth";
 const menuItems = [
   { icon: Home, label: "Início", href: "/dashboard" },
   { icon: Users, label: "Usuários", href: "/dashboard/users" },
-  { icon: Cloud, label: "Documentos", href: "/dashboard/documents" },
-  { icon: FileText, label: "Relatório", href: "/dashboard/relatorio" },
+  { icon: Briefcase, label: "Cargos", href: "/dashboard/cargos" },
+  { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
+  { icon: ClipboardList, label: "Relatório", href: "/dashboard/relatorio" },
+  { icon: Cloud, label: "Drive", href: "/dashboard/drive" },
   { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
 ];
-
-// const menuItems = [
-//   { icon: Home, label: "Início", href: "/dashboard" },
-//   { icon: Users, label: "Usuários", href: "/dashboard/users" },
-//   { icon: Briefcase, label: "Cargos", href: "/dashboard/cargos" },
-//   { icon: ClipboardList, label: "Relatório", href: "/dashboard/relatorio" },
-//   { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
-//   { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
-// ]
 
 export function Sidebar() {
   const { logout } = useAuth();
