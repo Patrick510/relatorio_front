@@ -21,36 +21,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X, Plus, FileText, Send } from "lucide-react";
-
-type TipoRelatorio = "prefeitura" | "unimed" | null;
-
-interface Comportamento {
-  id: string;
-  descricao: string;
-}
-
-interface MotivosContinuidade {
-  id: string;
-  motivo: string;
-}
-
-interface FormData {
-  paciente: string;
-  coordenadora: string;
-  psicologo: string;
-  introducao: string;
-  comportamentos: Comportamento[];
-  evolucao: {
-    engajamento: string;
-    afetividade: string;
-    organizacao: string;
-    crisesEResistencias: string;
-    comunicacaoFuncional: string;
-    coordenacaoMotora: string;
-  };
-  conclusao: string;
-  motivosContinuidade: MotivosContinuidade[];
-}
+import type {
+  TipoRelatorio,
+  FormData,
+  Comportamento,
+  MotivosContinuidade,
+} from "@/types";
 
 export default function RelatorioPage() {
   const [tipoRelatorio, setTipoRelatorio] = useState<TipoRelatorio>(null);
