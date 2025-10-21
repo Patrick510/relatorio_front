@@ -19,46 +19,74 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Role } from "@/types";
 
 const menuItems = [
   { icon: Home, label: "Início", href: "/dashboard" },
-  { icon: Users, label: "Usuários", href: "/dashboard/users" },
+
+  {
+    icon: Users,
+    label: "Usuários",
+    href: "/dashboard/users",
+    rolesPermitidas: [Role.ADMIN],
+  },
+
   {
     icon: Puzzle,
     label: "Pacientes",
     href: "/dashboard/pacientes",
     subItems: [
+      { label: "Atendimento", href: "/dashboard/pacientes/atendimento" },
       { label: "Adicionar", href: "/dashboard/pacientes/adicionar" },
-      { label: "Editar", href: "/dashboard/pacientes/editar" },
-      { label: "Excluir", href: "/dashboard/pacientes/excluir" },
     ],
+    rolesPermitidas: [Role.ADMIN, Role.ATENDENTE, Role.PSICOLOGO],
   },
-  { icon: Briefcase, label: "Cargos", href: "/dashboard/cargos" },
+
+  {
+    icon: Briefcase,
+    label: "Cargos",
+    href: "/dashboard/cargos",
+    rolesPermitidas: [Role.ADMIN],
+  },
+
   {
     icon: ClipboardList,
     label: "Relatório",
     href: "/dashboard/relatorio",
     subItems: [
-      { label: "Formulario Unimed", href: "/dashboard/relatorio/unimed" },
-      {
-        label: "Formulario Prefeitura",
-        href: "/dashboard/relatorio/prefeitura",
-      },
+      { label: "Unimed", href: "/dashboard/relatorio/unimed" },
+      { label: "Prefeitura", href: "/dashboard/relatorio/prefeitura" },
       { label: "Relatórios", href: "/dashboard/relatorio/relatorios" },
     ],
+    rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO],
   },
+
   { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
-  { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
+
+  {
+    icon: Settings,
+    label: "Configurações",
+    href: "/dashboard/settings",
+    rolesPermitidas: [Role.ADMIN],
+  },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { logout } = useAuth();
+  const role = useAuth().getRole();
 
   const toggleExpanded = (label: string) => {
     setExpandedItem(expandedItem === label ? null : label);
   };
+
+  const filteredMenu = menuItems.filter(
+    (item) =>
+      !item.rolesPermitidas || item.rolesPermitidas.includes(role as Role)
+  );
 
   return (
     <>
@@ -100,7 +128,7 @@ export function Sidebar() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-3 md:p-4">
-          {menuItems.map((item) => {
+          {filteredMenu.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
             const isExpanded = expandedItem === item.label;
@@ -180,6 +208,7 @@ export function Sidebar() {
             className="w-full justify-start gap-3 text-muted-foreground hover:text-destructive"
             onClick={() => {
               console.log("Logout");
+              logout();
             }}
           >
             <LogOut className="h-5 w-5 shrink-0" />

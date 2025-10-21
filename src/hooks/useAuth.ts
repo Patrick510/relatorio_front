@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { Role } from "@/types";
 
 export function useAuth() {
   const [loading, setLoading] = useState(false);
@@ -51,8 +52,14 @@ export function useAuth() {
     return localStorage.getItem("token");
   }
 
-  function getRole() {
-    return localStorage.getItem("role");
+  function getRole(): Role | null {
+    const role = localStorage.getItem("role");
+    if (!role) return null;
+    const numRole = Number(role);
+    if (Object.values(Role).includes(numRole)) {
+      return numRole as Role;
+    }
+    return null;
   }
 
   function isAuthenticated() {
