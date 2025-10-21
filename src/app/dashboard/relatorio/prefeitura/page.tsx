@@ -1,5 +1,5 @@
-export default function FormularioPrefeitura() {
-  return (
-    <h1>Formulário da Prefeitura</h1>
-  );
+import FormularioPrefeitura from "@/components/formulario/formulario-prefeitura";
+
+export default function PrefeituraPage() {
+  return <FormularioPrefeitura />;
 }

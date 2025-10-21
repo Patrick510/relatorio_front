@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,18 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, Plus, FileText, Send } from "lucide-react";
-import type {
-  TipoRelatorio,
-  FormData,
-  Comportamento,
-  MotivosContinuidade,
-} from "@/types";
+import { X, Plus, Send } from "lucide-react";
+import type { FormData } from "@/types/relatorio";
 
-// QUANDO FOR FAZER A COMPONETNIZACAO CRIA VARIAS PASTAS COMO RELATORIO/PARTES/1 E ETC E COLOCA LA DENTRO CADA ETAPA, PORQUE TEM 500 LINHAS DE CODIGO AQUI
+interface FormularioUnimedProps {
+  onVoltar: () => void;
+}
 
-export default function RelatorioPage() {
-  const [tipoRelatorio, setTipoRelatorio] = useState<TipoRelatorio>(null);
+export default function FormularioUnimed() {
   const [comportamentoAtual, setComportamentoAtual] = useState("");
   const [motivoAtual, setMotivoAtual] = useState("");
 
@@ -98,15 +93,14 @@ export default function RelatorioPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Preparar dados para envio
     const dadosParaEnvio = {
-      tipo: tipoRelatorio,
+      tipo: "unimed",
       ...formData,
     };
 
-    console.log("[v0] Dados do relatório:", dadosParaEnvio);
+    console.log("[v0] Dados do relatório Unimed:", dadosParaEnvio);
 
-    // Aqui você faria a chamada para a API
+    // Chamada para a API
     await fetch("/api/relatorios", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -114,67 +108,17 @@ export default function RelatorioPage() {
     });
   };
 
-  // Cores baseadas no tipo de relatório
-  const corTema =
-    tipoRelatorio === "prefeitura"
-      ? "slate"
-      : tipoRelatorio === "unimed"
-      ? "emerald"
-      : "blue";
-  const corBotao =
-    tipoRelatorio === "prefeitura"
-      ? "bg-slate-900 hover:bg-slate-800"
-      : "bg-emerald-600 hover:bg-emerald-700";
-
-  if (!tipoRelatorio) {
-    return (
-      <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center p-6">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-            <CardTitle className="text-2xl">Novo Relatório</CardTitle>
-            <CardDescription>
-              Selecione o tipo de relatório que deseja criar
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Button
-              onClick={() => setTipoRelatorio("prefeitura")}
-              className="w-full bg-slate-900 hover:bg-slate-800"
-              size="lg"
-            >
-              Relatório Prefeitura
-            </Button>
-            <Button
-              onClick={() => setTipoRelatorio("unimed")}
-              className="w-full bg-emerald-600 hover:bg-emerald-700"
-              size="lg"
-            >
-              Relatório Unimed
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
+      <div className="mx-auto max-w-5xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">
-              Relatório{" "}
-              {tipoRelatorio === "prefeitura" ? "Prefeitura" : "Unimed"}
-            </h1>
+            <h1 className="text-3xl font-bold">Relatório Unimed</h1>
             <p className="text-muted-foreground">
               Preencha os campos abaixo para gerar o relatório
             </p>
           </div>
-          <Button variant="outline" onClick={() => setTipoRelatorio(null)}>
-            Trocar Tipo
-          </Button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -283,7 +227,7 @@ export default function RelatorioPage() {
                 <Button
                   type="button"
                   onClick={adicionarComportamento}
-                  className={corBotao}
+                  className="bg-emerald-600 hover:bg-emerald-700"
                   size="icon"
                 >
                   <Plus className="h-4 w-4" />
@@ -485,7 +429,7 @@ export default function RelatorioPage() {
                 <Button
                   type="button"
                   onClick={adicionarMotivo}
-                  className={corBotao}
+                  className="bg-emerald-600 hover:bg-emerald-700"
                   size="icon"
                 >
                   <Plus className="h-4 w-4" />
@@ -521,7 +465,11 @@ export default function RelatorioPage() {
             <Button type="button" variant="outline" size="lg">
               Salvar Rascunho
             </Button>
-            <Button type="submit" className={corBotao} size="lg">
+            <Button
+              type="submit"
+              className="bg-emerald-600 hover:bg-emerald-700"
+              size="lg"
+            >
               <Send className="mr-2 h-4 w-4" />
               Enviar Relatório
             </Button>
