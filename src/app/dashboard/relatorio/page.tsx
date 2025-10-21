@@ -28,6 +28,8 @@ import type {
   MotivosContinuidade,
 } from "@/types";
 
+// QUANDO FOR FAZER A COMPONETNIZACAO CRIA VARIAS PASTAS COMO RELATORIO/PARTES/1 E ETC E COLOCA LA DENTRO CADA ETAPA, PORQUE TEM 500 LINHAS DE CODIGO AQUI
+
 export default function RelatorioPage() {
   const [tipoRelatorio, setTipoRelatorio] = useState<TipoRelatorio>(null);
   const [comportamentoAtual, setComportamentoAtual] = useState("");

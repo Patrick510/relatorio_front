@@ -32,7 +32,19 @@ const menuItems = [
     ],
   },
   { icon: Briefcase, label: "Cargos", href: "/dashboard/cargos" },
-  { icon: ClipboardList, label: "Relatório", href: "/dashboard/relatorio" },
+  {
+    icon: ClipboardList,
+    label: "Relatório",
+    href: "/dashboard/relatorio",
+    subItems: [
+      { label: "Formulario Unimed", href: "/dashboard/relatorio/unimed" },
+      {
+        label: "Formulario Prefeitura",
+        href: "/dashboard/relatorio/prefeitura",
+      },
+      { label: "Relatórios", href: "/dashboard/relatorio/relatorios" },
+    ],
+  },
   { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
   { icon: Settings, label: "Configurações", href: "/dashboard/settings" },
 ];
