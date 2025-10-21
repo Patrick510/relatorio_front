@@ -9,6 +9,7 @@ export type Usuario = {
   nome: string;
   email: string;
   cargoId: number;
+  cargoNome?: string;
   role: string;
 };
 

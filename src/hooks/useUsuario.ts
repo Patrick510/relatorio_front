@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Role } from "@/types";
+import { Usuario } from "@/types";
 
 export function useUsuario() {
   const [loading, setLoading] = useState(false);
@@ -40,5 +40,46 @@ export function useUsuario() {
     }
   }
 
-  return { register, loading, error };
+  async function listarUsers() {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await api.get("/usuarios");
+      return response.data;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          "Erro ao listar usuários: " +
+            (err.response?.data?.message || err.message)
+        );
+      } else {
+        setError("Erro ao listar usuários");
+      }
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function atualizarUsuario(id: number, data: Partial<Usuario>) {
+    setLoading(true);
+    setError("");
+    try {
+      await api.put(`/usuarios/${id}`, data);
+      return true;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          "Erro ao atualizar usuário: " +
+            (err.response?.data?.message || err.message)
+        );
+      } else {
+        setError("Erro ao atualizar usuário");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { register, listarUsers, atualizarUsuario, loading, error };
 }

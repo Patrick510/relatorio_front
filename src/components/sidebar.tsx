@@ -29,6 +29,12 @@ const menuItems = [
     icon: Users,
     label: "Usuários",
     href: "/dashboard/users",
+    subItems: [
+      { label: "Listar", href: "/dashboard/users/listar" },
+      { label: "Adicionar", href: "/dashboard/users/adicionar" },
+      { label: "Editar", href: "/dashboard/users/editar" },
+      { label: "Roles", href: "/dashboard/users/roles" },
+    ],
     rolesPermitidas: [Role.ADMIN],
   },
 
