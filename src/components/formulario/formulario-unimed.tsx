@@ -22,10 +22,6 @@ import {
 import { X, Plus, Send } from "lucide-react";
 import type { FormData } from "@/types/relatorio";
 
-interface FormularioUnimedProps {
-  onVoltar: () => void;
-}
-
 export default function FormularioUnimed() {
   const [comportamentoAtual, setComportamentoAtual] = useState("");
   const [motivoAtual, setMotivoAtual] = useState("");
@@ -109,23 +105,25 @@ export default function FormularioUnimed() {
   };
 
   return (
-    <div className="p-6">
-      <div className="mx-auto max-w-5xl space-y-6">
+    <div className="p-4 md:p-6">
+      <div className="mx-auto max-w-4xl space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Relatório Unimed</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-2xl font-bold md:text-3xl">Relatório Unimed</h1>
+            <p className="text-sm text-muted-foreground md:text-base">
               Preencha os campos abaixo para gerar o relatório
             </p>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
           {/* Informações Básicas */}
           <Card>
             <CardHeader>
-              <CardTitle>Informações Básicas</CardTitle>
+              <CardTitle className="text-lg md:text-xl">
+                Informações Básicas
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -190,7 +188,7 @@ export default function FormularioUnimed() {
           {/* Introdução */}
           <Card>
             <CardHeader>
-              <CardTitle>Introdução</CardTitle>
+              <CardTitle className="text-lg md:text-xl">Introdução</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea
@@ -200,6 +198,7 @@ export default function FormularioUnimed() {
                   setFormData({ ...formData, introducao: e.target.value })
                 }
                 rows={6}
+                className="text-sm md:text-base"
               />
             </CardContent>
           </Card>
@@ -207,16 +206,18 @@ export default function FormularioUnimed() {
           {/* Comportamentos */}
           <Card>
             <CardHeader>
-              <CardTitle>Comportamentos Observados</CardTitle>
+              <CardTitle className="text-lg md:text-xl">
+                Comportamentos Observados
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <Textarea
                   placeholder="Descreva o comportamento observado..."
                   value={comportamentoAtual}
                   onChange={(e) => setComportamentoAtual(e.target.value)}
                   rows={3}
-                  className="flex-1"
+                  className="flex-1 text-sm md:text-base"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && e.ctrlKey) {
                       e.preventDefault();
@@ -227,7 +228,7 @@ export default function FormularioUnimed() {
                 <Button
                   type="button"
                   onClick={adicionarComportamento}
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-emerald-600 hover:bg-emerald-700 sm:w-auto"
                   size="icon"
                 >
                   <Plus className="h-4 w-4" />
@@ -263,8 +264,8 @@ export default function FormularioUnimed() {
           {/* Evolução */}
           <Card>
             <CardHeader>
-              <CardTitle>Evolução</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-lg md:text-xl">Evolução</CardTitle>
+              <CardDescription className="text-sm">
                 Descreva a evolução do paciente em cada aspecto
               </CardDescription>
             </CardHeader>
@@ -392,7 +393,7 @@ export default function FormularioUnimed() {
           {/* Conclusão */}
           <Card>
             <CardHeader>
-              <CardTitle>Conclusão</CardTitle>
+              <CardTitle className="text-lg md:text-xl">Conclusão</CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea
@@ -402,6 +403,7 @@ export default function FormularioUnimed() {
                   setFormData({ ...formData, conclusao: e.target.value })
                 }
                 rows={6}
+                className="text-sm md:text-base"
               />
             </CardContent>
           </Card>
@@ -409,16 +411,18 @@ export default function FormularioUnimed() {
           {/* Motivos da Continuidade */}
           <Card>
             <CardHeader>
-              <CardTitle>Motivos da Continuidade da Terapia ABA</CardTitle>
+              <CardTitle className="text-lg md:text-xl">
+                Motivos da Continuidade da Terapia ABA
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <Textarea
                   placeholder="Descreva um motivo para continuidade..."
                   value={motivoAtual}
                   onChange={(e) => setMotivoAtual(e.target.value)}
                   rows={3}
-                  className="flex-1"
+                  className="flex-1 text-sm md:text-base"
                   onKeyDown={(e) => {
                     if (e.key === "Enter" && e.ctrlKey) {
                       e.preventDefault();
@@ -429,7 +433,7 @@ export default function FormularioUnimed() {
                 <Button
                   type="button"
                   onClick={adicionarMotivo}
-                  className="bg-emerald-600 hover:bg-emerald-700"
+                  className="bg-emerald-600 hover:bg-emerald-700 sm:w-auto"
                   size="icon"
                 >
                   <Plus className="h-4 w-4" />
@@ -461,13 +465,18 @@ export default function FormularioUnimed() {
           </Card>
 
           {/* Botão de Envio */}
-          <div className="flex justify-end gap-3">
-            <Button type="button" variant="outline" size="lg">
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="w-full sm:w-auto bg-transparent"
+            >
               Salvar Rascunho
             </Button>
             <Button
               type="submit"
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="w-full bg-emerald-600 hover:bg-emerald-700 sm:w-auto"
               size="lg"
             >
               <Send className="mr-2 h-4 w-4" />
