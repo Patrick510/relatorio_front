@@ -57,6 +57,8 @@ export function useAuth() {
     if (!role) return null;
 
     switch (role) {
+      case "SUPER_ADMIN":
+        return Role.SUPER_ADMIN;
       case "ADMIN":
         return Role.ADMIN;
       case "USER":

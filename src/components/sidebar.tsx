@@ -11,7 +11,9 @@ import {
   Puzzle,
   ChevronDown,
   X,
-  TextAlignJustify,
+  AlignJustify as TextAlignJustify,
+  ShieldAlert as ShieldUser,
+  Archive,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,11 +22,23 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Role } from "@/types";
+import { Role, MenuItem } from "@/types";
 
-const menuItems = [
+const menuItems: MenuItem[] = [
   { icon: Home, label: "Início", href: "/dashboard" },
 
+  {
+    icon: ShieldUser,
+    label: "Admin",
+    href: "/dashboard/admin",
+    subItems: [
+      { label: "Listar", href: "/dashboard/admin/listar" },
+      { label: "Excluir Usuário", href: "/dashboard/admin/excluir" },
+      { label: "Editar", href: "/dashboard/admin/editar" },
+      { label: "Roles", href: "/dashboard/admin/roles" },
+    ],
+    rolesPermitidas: [Role.SUPER_ADMIN],
+  },
   {
     icon: Users,
     label: "Usuários",
@@ -35,7 +49,7 @@ const menuItems = [
       { label: "Editar", href: "/dashboard/users/editar" },
       { label: "Roles", href: "/dashboard/users/roles" },
     ],
-    rolesPermitidas: [Role.ADMIN],
+    rolesPermitidas: [Role.ADMIN, Role.SUPER_ADMIN],
   },
 
   {
@@ -43,29 +57,48 @@ const menuItems = [
     label: "Pacientes",
     href: "/dashboard/pacientes",
     subItems: [
-      { label: "Atendimento", href: "/dashboard/pacientes/atendimento" },
-      { label: "Adicionar", href: "/dashboard/pacientes/adicionar" },
+      {
+        label: "Atendimento",
+        href: "/dashboard/pacientes/atendimento",
+        disabled: true,
+      },
+      {
+        label: "Adicionar",
+        href: "/dashboard/pacientes/adicionar",
+        disabled: true,
+      },
+      { label: "Editar", href: "/dashboard/pacientes/editar", disabled: true },
     ],
-    rolesPermitidas: [Role.ADMIN, Role.ATENDENTE, Role.PSICOLOGO],
+    rolesPermitidas: [
+      Role.ADMIN,
+      Role.ATENDENTE,
+      Role.PSICOLOGO,
+      Role.SUPER_ADMIN,
+    ],
   },
 
   {
     icon: Briefcase,
     label: "Cargos",
     href: "/dashboard/cargos",
-    rolesPermitidas: [Role.ADMIN],
+    rolesPermitidas: [Role.ADMIN, Role.SUPER_ADMIN],
   },
 
   {
-    icon: ClipboardList,
-    label: "Relatório",
+    icon: Archive,
+    label: "Relatórios",
     href: "/dashboard/relatorio",
+    rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO, Role.SUPER_ADMIN],
+  },
+  {
+    icon: ClipboardList,
+    label: "Formularios",
+    href: "/dashboard/formulario",
     subItems: [
-      { label: "Unimed", href: "/dashboard/relatorio/unimed" },
-      { label: "Prefeitura", href: "/dashboard/relatorio/prefeitura" },
-      { label: "Relatórios", href: "/dashboard/relatorio/relatorios" },
+      { label: "Unimed", href: "/dashboard/formulario/unimed" },
+      { label: "Prefeitura", href: "/dashboard/formulario/prefeitura" },
     ],
-    rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO],
+    rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO, Role.SUPER_ADMIN],
   },
 
   { icon: FileText, label: "Documentos", href: "/dashboard/documents" },
@@ -74,7 +107,7 @@ const menuItems = [
     icon: Settings,
     label: "Configurações",
     href: "/dashboard/settings",
-    rolesPermitidas: [Role.ADMIN],
+    rolesPermitidas: [Role.SUPER_ADMIN],
   },
 ];
 
@@ -164,19 +197,30 @@ export function Sidebar() {
                     </button>
                     {isExpanded && (
                       <div className="ml-8 mt-1 space-y-1">
-                        {item.subItems.map((subItem) => {
+                        {item.subItems?.map((subItem) => {
                           const isSubActive = pathname === subItem.href;
+                          const isDisabled = subItem.disabled;
+
                           return (
                             <Link
                               key={subItem.href}
-                              href={subItem.href}
-                              onClick={() => setIsMobileOpen(false)}
+                              href={isDisabled ? "#" : subItem.href}
+                              onClick={(e) => {
+                                if (isDisabled) {
+                                  e.preventDefault();
+                                  return;
+                                }
+                                setIsMobileOpen(false);
+                              }}
                               className={cn(
                                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                                isSubActive
+                                isDisabled
+                                  ? "cursor-not-allowed opacity-50"
+                                  : isSubActive
                                   ? "bg-primary text-primary-foreground"
                                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                               )}
+                              aria-disabled={isDisabled}
                             >
                               {subItem.label}
                             </Link>

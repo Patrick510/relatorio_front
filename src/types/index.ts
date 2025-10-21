@@ -1,3 +1,5 @@
+import { ElementType } from "react";
+
 // EXISTENTES
 export type Cargo = {
   id: number;
@@ -14,9 +16,24 @@ export type Usuario = {
 };
 
 export enum Role {
-  ADMIN = 0,
-  USER = 1,
-  RESPONSAVEL = 2,
-  ATENDENTE = 3,
-  PSICOLOGO = 4,
+  SUPER_ADMIN = 0,
+  ADMIN = 1,
+  USER = 2,
+  RESPONSAVEL = 3,
+  ATENDENTE = 4,
+  PSICOLOGO = 5,
+}
+
+interface SubItem {
+  label: string;
+  href: string;
+  disabled?: boolean; // opcional
+}
+
+export interface MenuItem {
+  icon: ElementType;
+  label: string;
+  href: string;
+  rolesPermitidas?: Role[];
+  subItems?: SubItem[];
 }
