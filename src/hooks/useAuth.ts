@@ -55,11 +55,21 @@ export function useAuth() {
   function getRole(): Role | null {
     const role = localStorage.getItem("role");
     if (!role) return null;
-    const numRole = Number(role);
-    if (Object.values(Role).includes(numRole)) {
-      return numRole as Role;
+
+    switch (role) {
+      case "ADMIN":
+        return Role.ADMIN;
+      case "USER":
+        return Role.USER;
+      case "RESPONSAVEL":
+        return Role.RESPONSAVEL;
+      case "ATENDENTE":
+        return Role.ATENDENTE;
+      case "PSICOLOGO":
+        return Role.PSICOLOGO;
+      default:
+        return null;
     }
-    return null;
   }
 
   function isAuthenticated() {
