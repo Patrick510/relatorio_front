@@ -65,7 +65,7 @@ const menuItems: MenuItem[] = [
       {
         label: "Adicionar",
         href: "/dashboard/pacientes/adicionar",
-        disabled: true,
+        disabled: false,
       },
       { label: "Editar", href: "/dashboard/pacientes/editar", disabled: true },
     ],
