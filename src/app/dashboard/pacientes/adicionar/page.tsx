@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -207,7 +205,7 @@ export default function AdicionarPacientePage() {
             <div className="space-y-2">
               <Label htmlFor="nome" className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Nome Completo *
+                Nome Completo <span className="text-red-500 ml-[-4px]">*</span>
               </Label>
               <Input
                 id="nome"
@@ -226,7 +224,8 @@ export default function AdicionarPacientePage() {
                 className="flex items-center gap-2"
               >
                 <Calendar className="h-4 w-4" />
-                Data de Nascimento *
+                Data de Nascimento{" "}
+                <span className="text-red-500 ml-[-4px]">*</span>
               </Label>
               <Input
                 id="dataNascimento"
@@ -252,7 +251,7 @@ export default function AdicionarPacientePage() {
                     className="flex items-center gap-2"
                   >
                     <Phone className="h-4 w-4" />
-                    Celular *
+                    Celular <span className="text-red-500 ml-[-4px]">*</span>
                   </Label>
                   <Input
                     id="celularPaciente"
@@ -270,7 +269,7 @@ export default function AdicionarPacientePage() {
                     className="flex items-center gap-2"
                   >
                     <Mail className="h-4 w-4" />
-                    Email *
+                    Email <span className="text-red-500 ml-[-4px]">*</span>
                   </Label>
                   <Input
                     id="emailPaciente"
