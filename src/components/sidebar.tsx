@@ -60,14 +60,14 @@ const menuItems: MenuItem[] = [
       {
         label: "Atendimento",
         href: "/dashboard/pacientes/atendimento",
-        disabled: true,
+        disabled: false,
       },
       {
         label: "Adicionar",
         href: "/dashboard/pacientes/adicionar",
         disabled: false,
       },
-      { label: "Editar", href: "/dashboard/pacientes/editar", disabled: true },
+      { label: "Editar", href: "/dashboard/pacientes/editar", disabled: false },
     ],
     rolesPermitidas: [
       Role.ADMIN,
@@ -92,11 +92,18 @@ const menuItems: MenuItem[] = [
   },
   {
     icon: ClipboardList,
-    label: "Formularios",
-    href: "/dashboard/formulario",
+    label: "Formularios Aba",
+    href: "/dashboard/formularioAba",
+    subItems: [{ label: "Unimed", href: "/dashboard/formularioAba/unimed" }],
+    rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO, Role.SUPER_ADMIN],
+  },
+  {
+    icon: ClipboardList,
+    label: "Formularios Psicologicos",
+    href: "/dashboard/formularioPsico",
     subItems: [
-      { label: "Unimed", href: "/dashboard/formulario/unimed" },
-      { label: "Prefeitura", href: "/dashboard/formulario/prefeitura" },
+      { label: "Anamnese", href: "/dashboard/formularioPsico/anamnese" },
+      { label: "Prefeitura", href: "/dashboard/formularioPsico/prefeitura" },
     ],
     rolesPermitidas: [Role.ADMIN, Role.PSICOLOGO, Role.SUPER_ADMIN],
   },

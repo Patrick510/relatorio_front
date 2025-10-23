@@ -65,6 +65,39 @@ export function usePaciente() {
     }
   }
 
+  async function atrelarResponsavel(
+    idPaciente: number,
+    responsavel: {
+      nome: string;
+      parentesco: string;
+      celular: string;
+      email: string;
+    },
+    contatoPrincipal: boolean
+  ) {
+    setLoading(true);
+    setError("");
+    try {
+      await api.post(
+        `/paciente/only-responsavel/${idPaciente}?contatoPrincipal=${contatoPrincipal}`,
+        responsavel // apenas o objeto do responsável
+      );
+      return true;
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(
+          "Erro ao atrelar responsável: " +
+            (err.response?.data?.message || err.message)
+        );
+      } else {
+        setError("Erro ao atrelar responsável");
+      }
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function atualizarPaciente(
     id: number,
     data: Partial<PacienteCompleto>
@@ -88,5 +121,12 @@ export function usePaciente() {
     }
   }
 
-  return { register, listarPacientes, atualizarPaciente, loading, error };
+  return {
+    register,
+    listarPacientes,
+    atrelarResponsavel,
+    atualizarPaciente,
+    loading,
+    error,
+  };
 }

@@ -15,16 +15,26 @@ export type Usuario = {
   role: string;
 };
 
+export type PacienteFormData = {
+  nome: string;
+  dataNascimento: string;
+  outrasInformacoes: string;
+  celular?: string;
+  email?: string;
+};
+
+export type ResponsavelFormData = {
+  nome: string;
+  parentesco: string;
+  celular: string;
+  email: string;
+  contatoPrincipal: boolean;
+};
+
 export type PacienteCompleto = {
   id: number;
   paciente: Paciente | null;
   responsavel: Responsavel | null;
-};
-
-export type Paciente = {
-  id: number;
-  nome: string;
-  dataNascimento: number;
 };
 
 export type Responsavel = {
@@ -33,6 +43,13 @@ export type Responsavel = {
   parentesco: string;
   celular: string;
   email: string;
+};
+
+export type Paciente = {
+  id: number;
+  nome: string;
+  dataNascimento: string; // ← mudou de number para string
+  responsavel?: Responsavel | null; // ← adicionado
 };
 
 export enum Role {
