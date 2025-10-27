@@ -18,9 +18,9 @@ export type Usuario = {
 export type PacienteFormData = {
   nome: string;
   dataNascimento: string;
-  outrasInformacoes: string;
   celular?: string;
   email?: string;
+  outrasInformacoes?: string;
 };
 
 export type ResponsavelFormData = {

@@ -30,30 +30,18 @@ import {
   Heart,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-
-type PacienteFormData = {
-  nome: string;
-  dataNascimento: string;
-  outrasInformacoes: string;
-  celular?: string;
-  email?: string;
-};
-
-type ResponsavelFormData = {
-  nome: string;
-  parentesco: string;
-  celular: string;
-  email: string;
-  contatoPrincipal: boolean;
-};
+import { usePaciente } from "@/hooks/usePaciente";
+import {
+  PacienteCompleto,
+  PacienteFormData,
+  ResponsavelFormData,
+} from "@/types";
 
 export default function AdicionarPacientePage() {
+  const { registrarPacienteResponsavel } = usePaciente();
   const [paciente, setPaciente] = useState<PacienteFormData>({
     nome: "",
     dataNascimento: "",
-    outrasInformacoes: "",
-    celular: "",
-    email: "",
   });
 
   const [responsavel, setResponsavel] = useState<ResponsavelFormData>({
@@ -110,58 +98,41 @@ export default function AdicionarPacientePage() {
     setPaciente({ ...paciente, celular: valorFormatado });
   };
 
+  // dentro do seu componente AdicionarPacientePage
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      let payload;
+      // pacientePayload deve ter o formato esperado pelo backend (LocalDate via string YYYY-MM-DD)
+      const pacientePayload = {
+        nome: paciente.nome,
+        dataNascimento: paciente.dataNascimento, // "YYYY-MM-DD" do input date
+      };
 
-      if (ehResponsavel) {
-        payload = {
-          ehResponsavel: true,
-          paciente: {
-            nome: paciente.nome,
-            dataNascimento: paciente.dataNascimento,
-            celular: paciente.celular,
-            email: paciente.email,
-            outrasInformacoes: paciente.outrasInformacoes || undefined,
-          },
-        };
-      } else {
-        payload = {
-          ehResponsavel: false,
-          paciente: {
-            nome: paciente.nome,
-            dataNascimento: paciente.dataNascimento,
-            outrasInformacoes: paciente.outrasInformacoes || undefined,
-          },
-          responsavel: {
+      // montar responsavelPayload ou null quando ehResponsavel === true
+      const responsavelPayload = ehResponsavel
+        ? null
+        : {
             nome: responsavel.nome,
-            parentesco: responsavel.parentesco,
-            celular: responsavel.celular,
-            email: responsavel.email,
-            contatoPrincipal: responsavel.contatoPrincipal,
-          },
-        };
-      }
+            parentesco: responsavel.parentesco, // ex: "MAE", "PAI", "TUTOR" (string igual ao enum)
+            celular: responsavel.celular || "",
+            email: responsavel.email || "",
+            role: "RESPONSAVEL", // importante: enviar um role compatível com o enum do backend
+          };
 
-      console.log("[v0] Enviando dados do paciente:", payload);
+      const sucesso = await registrarPacienteResponsavel(
+        ehResponsavel,
+        pacientePayload,
+        responsavelPayload
+      );
 
-      const response = await fetch("/api/pacientes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
+      if (sucesso) {
         alert("Paciente cadastrado com sucesso!");
+        // limpar estado
         setPaciente({
           nome: "",
           dataNascimento: "",
-          outrasInformacoes: "",
-          celular: "",
-          email: "",
         });
         setResponsavel({
           nome: "",
@@ -170,8 +141,6 @@ export default function AdicionarPacientePage() {
           email: "",
           contatoPrincipal: false,
         });
-      } else {
-        alert("Erro ao cadastrar paciente");
       }
     } catch (error) {
       console.error("[v0] Erro ao enviar:", error);

@@ -14,21 +14,27 @@ export function usePaciente() {
     headers: { "Content-Type": "application/json" },
   });
 
-  async function register(
+  // usePaciente.ts
+  async function registrarPacienteResponsavel(
     ehResponsavel: boolean,
-    paciente: { nome: string; dataNascimento: number },
+    paciente: { nome: string; dataNascimento: string },
     responsavel: {
       nome: string;
       parentesco: string;
-      celular: string;
-      email: string;
-    }
+      celular?: string;
+      email?: string;
+      role?: string;
+    } | null
   ) {
     setLoading(true);
     setError("");
     try {
-      await api.post("/usuarios", { ehResponsavel, paciente, responsavel });
-      router.push("/login");
+      // POST para /paciente/with-responsavel (controller mapeado como /paciente)
+      await api.post("/paciente/with-responsavel", {
+        paciente,
+        responsavel,
+        ehResponsavel,
+      });
       return true;
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
@@ -122,7 +128,7 @@ export function usePaciente() {
   }
 
   return {
-    register,
+    registrarPacienteResponsavel,
     listarPacientes,
     atrelarResponsavel,
     atualizarPaciente,
