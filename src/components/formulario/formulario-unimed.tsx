@@ -9,9 +9,11 @@ import Passo2 from "./unimed/Step2";
 import Passo1 from "./unimed/Step1";
 import Passo3 from "./unimed/Step3";
 import Passo4 from "./unimed/Step4";
+import { useForm } from "@/hooks/useForm";
 
 export default function FormularioUnimed() {
   const [currentStep, setCurrentStep] = useState(1);
+  const { gerarFormulario, loading, error } = useForm();
   const totalSteps = 4;
 
   const [comportamentoAtual, setComportamentoAtual] = useState("");
@@ -58,18 +60,34 @@ export default function FormularioUnimed() {
     e.preventDefault();
 
     const dadosParaEnvio = {
-      tipo: "unimed",
-      ...formData,
+      idPaciente: 1, // ou vindo de contexto/rota
+      formularioDTO: {
+        introducao: formData.introducao,
+        comportamentos: formData.comportamentos.map((c) => c.descricao),
+        evolucao: [
+          {
+            engajamento: formData.evolucao.engajamento,
+            afetividade: formData.evolucao.afetividade,
+            organizacao: formData.evolucao.organizacao,
+            crisesEResistencias: formData.evolucao.crisesEResistencias,
+            comunicacaoFuncional: formData.evolucao.comunicacaoFuncional,
+            coordenacaoMotora: formData.evolucao.coordenacaoMotora,
+          },
+        ],
+        conclusao: formData.conclusao,
+        listaConclusao: formData.motivosContinuidade.map((m) => m.motivo),
+        nomeCoordenadora: formData.coordenadora,
+        nomePsicologa: formData.psicologo,
+      },
     };
 
-    console.log("[v0] Dados do relatório Unimed:", dadosParaEnvio);
+    console.log("[ENVIANDO PARA BACKEND]", dadosParaEnvio);
 
-    // Chamada para a API
-    await fetch("/api/relatorios", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dadosParaEnvio),
-    });
+    const sucesso = await gerarFormulario(dadosParaEnvio);
+
+    if (sucesso) {
+      console.log("✅ Relatório enviado com sucesso!");
+    }
   };
 
   const nextStep = () => {
@@ -171,9 +189,15 @@ export default function FormularioUnimed() {
                   type="submit"
                   className="w-full bg-emerald-600 hover:bg-emerald-700 sm:w-auto"
                   size="lg"
+                  disabled={loading}
                 >
-                  <Send className="mr-2 h-4 w-4" />
-                  Enviar Relatório
+                  {loading ? (
+                    "Enviando..."
+                  ) : (
+                    <>
+                      <Send className="mr-2 h-4 w-4" /> Enviar Relatório
+                    </>
+                  )}
                 </Button>
               )}
             </div>

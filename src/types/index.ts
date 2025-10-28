@@ -74,3 +74,27 @@ export interface MenuItem {
   rolesPermitidas?: Role[];
   subItems?: SubItem[];
 }
+
+// types/index.ts
+
+export type EvolucaoDTO = {
+  engajamento: string;
+  afetividade: string;
+  organizacao: string;
+  crisesEResistencias: string;
+  comunicacaoFuncional: string;
+  coordenacaoMotora: string;
+};
+
+export type RelatorioFormData = {
+  idPaciente: number;
+  formularioDTO: {
+    introducao: string;
+    comportamentos: string[];
+    evolucao: EvolucaoDTO[]; // ✅ agora bate com o backend
+    conclusao: string;
+    listaConclusao: string[];
+    nomeCoordenadora: string;
+    nomePsicologa: string;
+  };
+};
